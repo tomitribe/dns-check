@@ -94,7 +94,9 @@ public class DnsCommands {
     }
 
     @Command("check-java")
-    public StreamingOutput checkJava(final @Required @Option("hostname") String hostName, final @Option("count") @Default("5") Integer iterations) {
+    public StreamingOutput checkJava(final @Required @Option("hostname") String hostName,
+                                     final @Option("count") @Default("5") Integer iterations,
+                                     final @Option("delay") @Default ("100") Integer delay) {
         return new StreamingOutput() {
             @Override
             public void write(final OutputStream outputStream) throws IOException {
@@ -110,6 +112,12 @@ public class DnsCommands {
 
                     writer.println(String.format("Found in %d ms: %s", (end - start), address.toString()));
                     writer.flush();
+
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        // ignore
+                    }
                 }
             }
         };
